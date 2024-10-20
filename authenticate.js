@@ -38,3 +38,16 @@ exports.jwtPassport = passport.use(
 );
 
 exports.verifyUser = passport.authenticate('jwt', {session: false});
+
+// Middleware to verify if the user is an admin
+exports.verifyAdmin = function(req, res, next) {
+    // Check if req.user exists and if the admin property is true
+    if (req.user && req.user.admin) {
+        return next(); // User is an admin, proceed to the next middleware
+    } else {
+        // User is not an admin, create an error and set status to 403
+        const err = new Error("You are not authorized to perform this operation!");
+        err.status = 403;
+        return next(err); // Pass the error to the next middleware
+    }
+};
